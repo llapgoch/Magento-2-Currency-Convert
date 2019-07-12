@@ -2,6 +2,8 @@
 
 namespace Thanhdv2811\CurrencyConverter\Model\Currency\Import;
 
+use Magento\Framework\Exception\LocalizedException;
+
 /**
  * Currency rate import model (From https://free.currencyconverterapi.com/)
  */
@@ -10,7 +12,7 @@ class Fcc extends \Magento\Directory\Model\Currency\Import\AbstractImport
     /**
      * @var string
      */
-    const CURRENCY_CONVERTER_URL = 'https://free.currencyconverterapi.com/api/v3/convert?q={{CURRENCY_FROM}}_{{CURRENCY_TO}}';
+    const CURRENCY_CONVERTER_URL = 'https://free.currencyconverterapi.com/api/v3/convert?q={{CURRENCY_FROM}}_{{CURRENCY_TO}}&apiKey={{API_KEY}}';
 
     /** @var \Magento\Framework\Json\Helper\Data */
     protected $jsonHelper;
@@ -58,22 +60,30 @@ class Fcc extends \Magento\Directory\Model\Currency\Import\AbstractImport
     protected function _convert($currencyFrom, $currencyTo, $retry = 0)
     {
         $result = null;
+
+        $apiKey = $this->scopeConfig->getValue(
+            'currency/freeCurrencyConverter/apikey',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+        );
+        
+        if(!$apiKey){
+            throw new LocalizedException(__('Please enter an API key to use this service'));
+        }
+
         $url = str_replace('{{CURRENCY_FROM}}', $currencyFrom, self::CURRENCY_CONVERTER_URL);
         $url = str_replace('{{CURRENCY_TO}}', $currencyTo, $url);
+        $url = str_replace('{{API_KEY}}', $apiKey, $url);
+        
         $timeout = (int)$this->scopeConfig->getValue(
             'currency/freeCurrencyConverter/timeout',
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE
         );
-
-        /** @var \Magento\Framework\HTTP\ZendClient $httpClient */
-        $httpClient = $this->httpClientFactory->create();
-
+        
         try {
-            $response = $httpClient->setUri($url)
-                ->setConfig(['timeout' => $timeout])
-                ->request('GET')
-                ->getBody();
 
+            // Removed the use of Zend Client as it throws a wobbler for HTTP/2
+            $response = file_get_contents($url);
+            
             $resultKey = $currencyFrom . '_' . $currencyTo;
             $data = $this->jsonHelper->jsonDecode($response);
             $results = $data['results'][$resultKey];

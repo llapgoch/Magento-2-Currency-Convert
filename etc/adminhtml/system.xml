@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
         <section id="currency">
             <group id="freeCurrencyConverter" translate="label" sortOrder="41" showInDefault="1" showInWebsite="0" showInStore="0">
@@ -8,6 +7,10 @@
                 <field id="timeout" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Connection Timeout in Seconds</label>
                     <comment>You can find more information in this website https://www.currencyconverterapi.com/docs</comment>
+                </field>
+                <field id="apikey" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Api Key</label>
+                    <comment>Please sign up a free api key in here https://free.currencyconverterapi.com</comment>
                 </field>
             </group>
             <group id="currencyLayer" translate="label" sortOrder="41" showInDefault="1" showInWebsite="0" showInStore="0">
@@ -24,7 +27,7 @@
                 <label>Frankfurter</label>
                 <field id="timeout" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Connection Timeout in Seconds</label>
-                    <comment>You can fund more information in this website https://frankfurter.app/</comment>
+                    <comment>You can find more information in this website https://frankfurter.app/</comment>
                 </field>
             </group>
         </section>
